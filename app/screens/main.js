@@ -9,11 +9,22 @@ import {
 } from 'react-native';
 
 import ProgressBar from '../components/progress-bar'
+import Actions from './actions';
 
 export default class Main extends React.Component {
     constructor(props) {
         super(props);
         this.navigateToAbout = this.navigateToAbout.bind(this);
+        this.handleActionsVisibility = this.handleActionsVisibility.bind(this);
+        this.state = {
+            actionsVisible: false,
+        }
+    }
+
+    handleActionsVisibility(){
+        this.setState({
+            actionsVisible: true
+        })
     }
 
     navigateToAbout(){
@@ -22,8 +33,10 @@ export default class Main extends React.Component {
     }
 
     render(){
+        console.log('dsfsdf');
         return(
             <View style={styles.container}>
+                <Actions visible={this.state.actionsVisible}/>
                 <StatusBar />
                 <View style={styles.header}>
                     <View style={styles.logoContainer}>
@@ -64,10 +77,11 @@ export default class Main extends React.Component {
                 </View>
                 <View style={styles.TabNavigationSection}>
                     <TouchableHighlight
+                        style={styles.bottomButtons}
                         onPress={() => {
-                            this.setModalVisible(true);
+                            this.handleActionsVisibility();
                         }}>
-                        <Text>Show Modal</Text>
+                        <Text style={styles.bottomButtonsText}>Actions</Text>
                     </TouchableHighlight>
                 </View>
             </View>
@@ -135,6 +149,15 @@ const styles = StyleSheet.create({
         height: 60,
         display: 'flex',
         flexDirection: 'row',
-        backgroundColor: 'green',
+        backgroundColor: '#a3c644',
+    },
+    bottomButtons: {
+        flex: 1,
+        alignItems: 'center',
+    },
+    bottomButtonsText: {
+        color: 'white',
+        fontSize: 30,
+        fontWeight: '400',
     }
 });

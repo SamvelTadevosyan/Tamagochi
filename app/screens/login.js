@@ -21,16 +21,17 @@ export default class Login extends React.Component {
     }
     _onPressLogin() {
         const { navigate } = this.props.navigation;
-        if (this.state.username === "" && this.state.password === "") {
-            alert('Please fill your data')
-        } else {
-            Keyboard.dismiss();
-            navigate('loggedInApp', {screen: 'loggedInApp'});
-            this.setState({
-                username: '',
-                password: '',
-            })
-        }
+        navigate('loggedInApp', {screen: 'loggedInApp'});
+        // if (this.state.username === "" && this.state.password === "") {
+        //     alert('Please fill your data')
+        // } else {
+        //     Keyboard.dismiss();
+        //     navigate('loggedInApp', {screen: 'loggedInApp'});
+        //     this.setState({
+        //         username: '',
+        //         password: '',
+        //     })
+        // }
     }
 
     render() {
