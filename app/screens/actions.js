@@ -1,18 +1,20 @@
 import React, {Component} from 'react';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import {
-    StyleSheet,
     Modal,
     Text,
     TouchableHighlight,
     View,
-    Image
 } from 'react-native';
+
+import {styles} from '../styles/actions-css'
 
 export default class Actions extends Component {
     constructor(props){
         super(props);
         this.state = {
             actionsVisible: this.props.visible,
+            iconContainerWidth: 0,
         };
     }
 
@@ -24,6 +26,13 @@ export default class Actions extends Component {
 
     hideActions() {
         this.setState({actionsVisible: false});
+    }
+
+    getIconContainerWidth(event) {
+        console.log(event.nativeEvent);
+        console.log('before', this.state.iconContainerWidth);
+        this.setState({iconContainerWidth: event.nativeEvent.layout.width});
+        console.log(this.state.iconContainerWidth);
     }
 
     render() {
@@ -39,11 +48,9 @@ export default class Actions extends Component {
                             onPress={() => {
                                 this.hideActions();
                             }}>
-                            <Image
-                                width={40}
-                                height={40}
-                                style={styles.close}
-                                source={require('../images/actions/example.png')} />
+                            <View style={styles.close}>
+                                <Icon name="times-circle" size={40} color="white" />
+                            </View>
                         </TouchableHighlight>
                     </View>
                     <View style={styles.sectionTitle}>
@@ -56,39 +63,46 @@ export default class Actions extends Component {
                     </View>
                     <View style={styles.sectionActions}>
                         <View style={styles.iconContainer}>
-                            <Image
-                                style={styles.icon}
-                                source={require('../images/actions/example.png')} />
+                            <View
+                                style={{
+                                    borderWidth: 1,
+                                    borderColor: '#ffffff',
+                                    borderRadius: this.state.iconContainerWidth,
+                                }}
+                                onLayout={(event) => this.getIconContainerWidth(event) }
+                            >
+                                <Icon name="home" size={50} color="white" />
+                            </View>
                             <Text style={styles.iconText}>Home</Text>
                         </View>
                         <View style={styles.iconContainer}>
-                            <Image
-                                style={styles.icon}
-                                source={require('../images/actions/example.png')} />
+                            <View style={styles.icon}>
+                                <Icon name="briefcase" size={50} color="white" />
+                            </View>
                             <Text style={styles.iconText}>Work</Text>
                         </View>
                         <View style={styles.iconContainer}>
-                            <Image
-                                style={styles.icon}
-                                source={require('../images/actions/example.png')} />
+                            <View style={styles.icon}>
+                                <Icon name="star" size={50} color="white" />
+                            </View>
                             <Text style={styles.iconText}>ASMT</Text>
                         </View>
                         <View style={styles.iconContainer}>
-                            <Image
-                                style={styles.icon}
-                                source={require('../images/actions/example.png')} />
+                            <View style={styles.icon}>
+                                <Icon name="comments" size={50} color="white" />
+                            </View>
                             <Text style={styles.iconText}>Soft</Text>
                         </View>
                         <View style={styles.iconContainer}>
-                            <Image
-                                style={styles.icon}
-                                source={require('../images/actions/example.png')} />
+                            <View style={styles.icon}>
+                                <Icon name="code" size={50} color="white" />
+                            </View>
                             <Text style={styles.iconText}>Hard</Text>
                         </View>
                         <View style={styles.iconContainer}>
-                            <Image
-                                style={styles.icon}
-                                source={require('../images/actions/example.png')} />
+                            <View style={styles.icon}>
+                                <Icon name="book" size={50} color="white" />
+                            </View>
                             <Text style={styles.iconText}>Docs</Text>
                         </View>
                     </View>
@@ -97,64 +111,3 @@ export default class Actions extends Component {
         );
     }
 }
-
-const styles = StyleSheet.create({
-    actionModal :{
-        flex: 1,
-        flexDirection: 'column',
-        backgroundColor: "rgba(0,0,0,0.7)"
-    },
-    sectionCloseModal: {
-        flex: 1,
-        alignItems: 'flex-end',
-        justifyContent: 'center',
-    },
-    sectionTitle:{
-        flex: 1,
-    },
-    sectionActions:{
-        flex: 3,
-        display: 'flex',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        alignItems: 'center',
-        justifyContent: 'space-around'
-    },
-    logoContainer: {
-        display: "flex",
-        flexDirection: "row",
-        alignSelf: "center",
-        justifyContent: 'center',
-    },
-    logo: {
-        fontWeight: 'bold',
-        fontSize: 25,
-        color: '#39c2d7'
-    },
-    logoText: {
-        fontWeight: 'bold',
-        fontSize: 25,
-        color: 'white'
-    },
-    text: {
-        alignSelf: 'center',
-        color: '#3ac0d6'
-    },
-    iconContainer: {
-        marginTop: '5%',
-        // borderBottom: 1,
-        // borderColor: '#ffffff',
-        // borderRadius: 100,
-        flexGrow: 1,
-        flexBasis: '33.3%',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    icon: {
-        maxWidth: '100%',
-    },
-    iconText: {
-        color: 'white'
-    }
-});
