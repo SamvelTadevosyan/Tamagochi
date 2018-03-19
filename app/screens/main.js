@@ -4,9 +4,10 @@ import {
     Text,
     Image,
     TouchableHighlight,
-    Button,
-    Animated
+    Animated,
+    AsyncStorage
 } from 'react-native';
+import ImagePicker from 'react-native-image-picker';
 
 import ProgressBar from '../components/progress-bar'
 import Actions from './actions';
@@ -16,11 +17,13 @@ export default class Main extends React.Component {
     constructor(props) {
         super(props);
         this.handleActionsVisibility = this.handleActionsVisibility.bind(this);
+        this.takePicture = this.takePicture.bind(this);
         this.state = {
             actionsVisible: false,
             fadeInAnimation: new Animated.Value(0),
+            pictureSource: require('../images/programmer.png'),
+            backgroundColor: '#cccccc'
         };
-
     }
 
     componentDidMount() {
@@ -31,6 +34,27 @@ export default class Main extends React.Component {
                 duration: 1000,
             }
         ).start();
+        AsyncStorage.getItem('position', (error, result) => {
+            const position = JSON.parse(result);
+            console.log('position', position);
+            fetch('http://api.openweathermap.org/data/2.5/weather?APPID=7e75cc831ea4f70ca99d37e6bd3baf97&lat='
+                +position.lat+
+                '&lon='+position.lon)
+                .then((response) => response.json())
+                .then((responseJson) => {
+                    let currentTime = (new Date).getTime();
+                    if(currentTime >= responseJson.sys.sunrise && currentTime <= responseJson.sys.sunrise){
+                        this.setState({
+                            backgroundColor: '#a09d9d',
+                        });
+                    }
+                    console.log(responseJson);
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
+        });
+
     }
 
     handleActionsVisibility(){
@@ -39,11 +63,33 @@ export default class Main extends React.Component {
         })
     }
 
+    takePicture(){
+        const options = {
+            quality: 1.0,
+            maxWidth: 500,
+            maxHeight: 500,
+            storageOptions: {
+                skipBackup: true
+            }
+        };
+
+        ImagePicker.showImagePicker(options, (response) => {
+            let source = { uri: 'data:image/jpeg;base64,' + response.data };
+            this.setState({
+                pictureSource: source
+            });
+        });
+    }
+
     render(){
-        let { fadeInAnimation } = this.state;
+        let { fadeInAnimation, pictureSource, backgroundColor } = this.state;
 
         return(
-            <View style={styles.container}>
+            <View style={{
+                flex: 1,
+                flexDirection: 'column',
+                backgroundColor: backgroundColor
+            }}>
                 <Actions visible={this.state.actionsVisible}/>
                 <View style={styles.body}>
                     <Animated.View
@@ -57,9 +103,14 @@ export default class Main extends React.Component {
                             }],
                         }}
                     >
-                        <Image
-                            style={styles.programmerImage}
-                            source={require('../images/programmer.png')} />
+                        <TouchableHighlight
+                            onPress={() => {
+                                this.takePicture();
+                            }}>
+                            <Image
+                                style={styles.programmerImage}
+                                source={pictureSource} />
+                        </TouchableHighlight>
                     </Animated.View>
                     <Animated.View
                         style={{

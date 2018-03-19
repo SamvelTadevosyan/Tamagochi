@@ -21,6 +21,9 @@ export default class Login extends React.Component {
             password: '',
             fadeInAnimation: new Animated.Value(0),
             passwordInput: new Animated.Value(0),
+            latitude: null,
+            longitude: null,
+            error: null,
         };
         this._onPressLogin = this._onPressLogin.bind(this)
     }
@@ -42,12 +45,28 @@ export default class Login extends React.Component {
                 }
             )
         ]).start();
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                AsyncStorage.setItem('position', JSON.stringify({
+                    lat: position.coords.latitude,
+                    lon: position.coords.longitude,
+                }));
+                AsyncStorage.getItem('position', (error, result) => {
+                    // console.log('result', result);
+                    // console.log('error', error);
+                });
+            },
+            (error) => {
+                console.log(error)
+            }
+        );
     }
 
     _onPressLogin() {
         const { username, password } = this.state;
         const { navigate } = this.props.navigation;
-
+        navigate('loggedInApp', {screen: 'loggedInApp'});
         // AsyncStorage.setItem('user', JSON.stringify({
         //     name: 'user',
         //     password: 'user',
@@ -55,27 +74,27 @@ export default class Login extends React.Component {
         //     alert('data added');
         // });
 
-        if (username === "" && password === "") {
-            alert('Please fill your data')
-        } else {
-            AsyncStorage.getItem('user', (error, result) => {
-                const data = JSON.parse(result);
-                if(username !== data.name){
-                    alert('User by name '+username+" does not exits");
-                }else{
-                    if(password !== data.password){
-                        alert("Password is wrong");
-                    }else{
-                        Keyboard.dismiss();
-                        this.setState({
-                            username: '',
-                            password: '',
-                        });
-                        navigate('loggedInApp', {screen: 'loggedInApp'});
-                    }
-                }
-            });
-        }
+        // if (username === "" && password === "") {
+        //     alert('Please fill your data')
+        // } else {
+        //     AsyncStorage.getItem('user', (error, result) => {
+        //         const data = JSON.parse(result);
+        //         if(username !== data.name){
+        //             alert('User by name '+username+" does not exits");
+        //         }else{
+        //             if(password !== data.password){
+        //                 alert("Password is wrong");
+        //             }else{
+        //                 Keyboard.dismiss();
+        //                 this.setState({
+        //                     username: '',
+        //                     password: '',
+        //                 });
+        //                 navigate('loggedInApp', {screen: 'loggedInApp'});
+        //             }
+        //         }
+        //     });
+        // }
     }
 
     render() {
